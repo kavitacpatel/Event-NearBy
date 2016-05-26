@@ -11,17 +11,23 @@ import Foundation
 class Events
 {
     static var instance = Events()
-    let radius: Int = 25
-    let page: Int = 1
+    var radius: Int = 25
+    var page: Int = 1
+    var date: String = "All"
+    var city: String = "Orlando,fl"
+    var category: String = "All"
     
-    func getEventsList(place: String,date: String,completionHandler: (data: NSArray?, err: NSError?) -> Void )
+    func getEventsList(completionHandler: (data: NSArray?, err: NSError?) -> Void )
     {
-        let urlString:String = "\(BASE_URL)\(API_KEY)&location=\(place)&date=\(date)&within=\(radius)&page_number=\(page)"
+        let dateNewString = date.stringByReplacingOccurrencesOfString(" ", withString: "%20", options: NSStringCompareOptions.LiteralSearch, range: nil)
+        let categoryNewString = category.stringByReplacingOccurrencesOfString(" ", withString: "%20", options: NSStringCompareOptions.LiteralSearch, range: nil)
+        let urlString:String = "\(BASE_URL)\(API_KEY)&location=\(city)&page_number=\(page)&date=\(dateNewString.lowercaseString)&within=\(radius)&c=\(categoryNewString.lowercaseString)&mature=safe&include=tickets"
         print(urlString)
         let request = NSMutableURLRequest(URL: NSURL(string: urlString)!)
         request.addValue("\(API_KEY)", forHTTPHeaderField: "X-Parse-REST-API-Key")
         let session = NSURLSession.sharedSession()
-       
+        // Clear Event History
+        EventDetails.events.removeAll()
         let task = session.dataTaskWithRequest(request) { data, response, error in
             if data == nil
             {
@@ -48,7 +54,15 @@ class Events
             parsedResult = try NSJSONSerialization.JSONObjectWithData(data, options: NSJSONReadingOptions.AllowFragments) as? NSDictionary
             let dict = parsedResult!["events"] as! NSDictionary
             let eventDict = dict["event"] as? NSArray
-            completionHandler(result: eventDict!, err: nil)
+            if eventDict?.count != 0
+            {
+                EventDetails.eventsFromResults(eventDict!)
+                completionHandler(result: eventDict!, err: nil)
+            }
+            else
+            {
+                completionHandler(result: eventDict!, err: nil)
+            }
         } catch let err as NSError
         {
             completionHandler(result: nil, err: err)

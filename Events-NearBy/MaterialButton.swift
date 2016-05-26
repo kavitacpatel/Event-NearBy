@@ -20,7 +20,7 @@ class MaterialButton: UIButton
             layer.shadowOpacity = 0.8
             layer.shadowOffset = CGSizeMake(0.0, 2.0)
             layer.borderWidth = 2.0
-            layer.borderColor = (UIColor.blackColor()).CGColor
+            
         }
 
 }

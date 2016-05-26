@@ -16,7 +16,7 @@ class EventsRefineController: UIViewController, UITableViewDataSource, UITableVi
     @IBOutlet weak var eventCategoryScrollView: UIScrollView!
     @IBOutlet weak var eventTimeBtn: UIButton!
     @IBOutlet weak var timeTableView: UITableView!
-   
+    @IBOutlet var categoryBtn: [MaterialButton]!
     let eventObj = Events()
     
     override func viewDidLoad()
@@ -27,20 +27,26 @@ class EventsRefineController: UIViewController, UITableViewDataSource, UITableVi
         timeTableView.hidden = true
         eventCategoryScrollView.contentSize = categoryContentView.bounds.size
         // set event time to anytime
-        let rowToSelect:NSIndexPath = NSIndexPath(forRow: 0, inSection: 0)
-        timeTableView.selectRowAtIndexPath(rowToSelect, animated: true, scrollPosition:UITableViewScrollPosition.None)
-        eventTimeBtn.setTitle(timeList[0], forState: .Normal)
-        
-    }
+        eventTimeBtn.setTitle(Events.instance.date, forState: .Normal)
+        for index in 0...categoryBtn.count-1
+        {
+            if categoryBtn[index].titleLabel?.text == Events.instance.category
+            {
+                // categoryBtn[index].backgroundColor = UIColor.redColor()
+                categoryBtn[index].setTitleColor(UIColor.blackColor(), forState: .Normal)
+            }
+        }
+     }
     override func viewDidAppear(animated: Bool)
     {
         super.viewDidAppear(animated)
+        timeTableView.flashScrollIndicators()
     }
     @IBAction func eventTimeBtn(sender: AnyObject)
     {
         timeTableView.hidden = false
     }
-    
+   
     func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int
     {
         return timeList.count
@@ -54,20 +60,27 @@ class EventsRefineController: UIViewController, UITableViewDataSource, UITableVi
     func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath)
     {
         eventTimeBtn.setTitle(timeList[indexPath.row], forState: .Normal)
+        Events.instance.date = timeList[indexPath.row]
         timeTableView.hidden = true
     }
-    @IBAction func eventCategoryPressed(sender: AnyObject)
+    @IBAction func eventCategoryPressed(sender: UIButton)
     {
-       
+        for index in 0...categoryBtn.count-1
+        {
+            if index == sender.tag
+            {
+               // categoryBtn[index].backgroundColor = UIColor.redColor()
+                categoryBtn[index].setTitleColor(UIColor.blackColor(), forState: .Normal)
+            }
+            else
+            {
+                categoryBtn[index].setTitleColor(UIColor.redColor(), forState: .Normal)
+                
+            }
+        }
+       Events.instance.category = sender.titleLabel!.text!
     }
-    func saveEventPlace()
-    {
-        
-    }
-    @IBAction func doneBtn(sender: AnyObject)
-    {
-        self.dismissViewControllerAnimated(true, completion: nil)
-    }
+    
     func alertMsg(title: String, msg: String)
     {
         let alert = UIAlertController(title: title, message: msg, preferredStyle: .Alert)

@@ -9,7 +9,7 @@
 import UIKit
 import MapKit
 
-class EventViewController: UIViewController, CLLocationManagerDelegate , UICollectionViewDelegate, UICollectionViewDataSource
+class EventViewController: UIViewController, CLLocationManagerDelegate , UICollectionViewDelegate, UICollectionViewDataSource, UITextFieldDelegate
 {
     @IBOutlet weak var eventCollectionView: UICollectionView!
     @IBOutlet weak var searchBar: UITextField!
@@ -17,13 +17,14 @@ class EventViewController: UIViewController, CLLocationManagerDelegate , UIColle
     let locationManager = CLLocationManager()
     var eventDict = [AnyObject]()
     var numberofEvents = 10
+    var selectedIndex : Int = 0
     
     override func viewDidLoad()
     {
         super.viewDidLoad()
         // Ask for Authorization from the User.
         self.locationManager.requestWhenInUseAuthorization()
-        
+        searchBar.text = Events.instance.city
         if CLLocationManager.locationServicesEnabled()
         {
             locationManager.requestAlwaysAuthorization()
@@ -31,17 +32,38 @@ class EventViewController: UIViewController, CLLocationManagerDelegate , UIColle
             locationManager.desiredAccuracy = kCLLocationAccuracyBest
             locationManager.startMonitoringSignificantLocationChanges()
         }
-       
+        getEvent()
     }
     override func viewDidAppear(animated: Bool)
     {
-        searchBar.text = "Orlando,fl"
-        Events.instance.getEventsList((self.searchBar.text?.lowercaseString)!, date: "all", completionHandler: { (data, err) in
-             self.eventDict = data! as [AnyObject]
-            print(self.eventDict.count)
-            self.numberofEvents = self.eventDict.count
-               self.eventCollectionView.reloadData()
+        eventCollectionView.reloadData()
+    }
+    func getEvent()
+    {
+        eventDict.removeAll()
+        self.eventCollectionView.reloadData()
+        Events.instance.getEventsList({ (data, err) in
+            if data == nil && err == nil
+            {
+                self.alertMsg("Error", msg: "Data Connection Error")
+            }
+            else if err != nil
+            {
+                self.alertMsg("Error", msg: (err?.description)!)
+            }
+            else
+            {
+                self.eventDict = data! as [AnyObject]
+                self.eventCollectionView.reloadData()
+            }
         })
+    }
+    func textFieldShouldReturn(textField: UITextField) -> Bool
+    {
+        textField.resignFirstResponder()
+        Events.instance.city = self.searchBar.text!
+        getEvent()
+        return true
     }
     func locationManager(manager: CLLocationManager, didUpdateLocations locations: [CLLocation])
     {
@@ -61,9 +83,8 @@ class EventViewController: UIViewController, CLLocationManagerDelegate , UIColle
             if let city = placeMark.addressDictionary?["City"] as? String, let state = placeMark.addressDictionary?["State"] as? String
             {
                 self.searchBar.text = city + "," + state
-                Events.instance.getEventsList((self.searchBar.text?.lowercaseString)!, date: "all", completionHandler: { (data, err) in
-                     self.eventDict = data! as [AnyObject]
-                })
+                Events.instance.city = self.searchBar.text!
+                self.getEvent()
             }
         }
     }
@@ -72,9 +93,8 @@ class EventViewController: UIViewController, CLLocationManagerDelegate , UIColle
         if status == CLAuthorizationStatus.Denied
         {
             searchBar.text = "Orlando,fl"
-            Events.instance.getEventsList((self.searchBar.text?.lowercaseString)!, date: "all", completionHandler: { (data, err) in
-                self.eventDict = data! as [AnyObject]
-            })
+            Events.instance.city = searchBar.text!
+            getEvent()
         }
     }
     //To reduce cell gaps
@@ -100,27 +120,93 @@ class EventViewController: UIViewController, CLLocationManagerDelegate , UIColle
         self.configureCell(cell, atIndexPath: indexPath)
         return cell
     }
+    @IBAction func unwindToRefineMenu(segue: UIStoryboardSegue)
+    {
+        if segue.sourceViewController is EventsRefineController
+        {
+            getEvent()
+        }
+    }
     func configureCell(cell: EventCollectionViewCell, atIndexPath indexPath: NSIndexPath)
     {
         if eventDict.count != 0
         {
-            dispatch_async(dispatch_get_main_queue())
-            {
-                print(self.eventDict[indexPath.row].valueForKey("title"))
-                cell.eventTitle.text = self.eventDict[indexPath.row].valueForKey("title") as? String
-                cell.eventTime.text = self.eventDict[indexPath.row].valueForKey("start_time") as? String
-                cell.eventVenue.text = self.eventDict[indexPath.row].valueForKey("venue_address") as? String
-                cell.activityInd.stopAnimating()
-                cell.activityInd.hidden = true
-            }
             
+                // Allocate value to cell labels
+                let imgURL = EventDetails.events[indexPath.row].imageURL
+                if imgURL != nil
+                {
+                    let url = NSURL(string: imgURL!)
+                    let data = NSData(contentsOfURL: url!)
+                    dispatch_async(dispatch_get_main_queue())
+                    {
+                        if data != nil
+                        {
+                            cell.eventImage.image = UIImage(data: data!)!
+                        }
+                    }
+                }
+                // Allocate tag to ticket button, so when it pressed we know which index number of cell.
+                cell.eventTicket.tag = indexPath.row
+                cell.eventTitle.text = EventDetails.events[indexPath.row].title
+                cell.eventTime.text = EventDetails.events[indexPath.row].start_time
+                cell.eventVenue.text = EventDetails.events[indexPath.row].venue_name
+                if EventDetails.events[indexPath.row].ticketURL != nil
+                    {
+                        cell.eventTicket.enabled = true
+                        cell.eventTicket.hidden = false
+                    }
+                else
+                {
+                    cell.eventTicket.hidden = true
+                }
+            cell.activityInd.stopAnimating()
+            cell.activityInd.hidden = true
+        }
+        else
+        {
+            cell.eventTitle.text = ""
+            cell.eventTime.text = ""
+            cell.eventVenue.text = ""
+            cell.eventTicket.hidden = true
         }
     }
     func collectionView(collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int
     {
         return numberofEvents
     }
-    
+    func collectionView(collectionView: UICollectionView, didSelectItemAtIndexPath indexPath: NSIndexPath)
+    {
+        selectedIndex = indexPath.row
+        performSegueWithIdentifier("detailSegue", sender: self)
+    }
+    override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?)
+    {
+        if segue.identifier == "detailSegue"
+        {
+            let detailVC = segue.destinationViewController as! DetailViewController
+            detailVC.eventIndex = selectedIndex
+        }
+    }
+    @IBAction func ticketBtnPressed(sender: AnyObject)
+    {
+        if EventDetails.events[sender.tag].ticketURL != nil
+        {
+            let url = NSURL(string: (EventDetails.events[sender.tag].ticketURL)!)
+            if UIApplication.sharedApplication().canOpenURL(url!)
+            {
+                UIApplication.sharedApplication().openURL(url!)
+            }
+            else
+            {
+                alertMsg("Link Error", msg: "Ticket Link is Not InValid" )
+            }
+        }
+    }
+    @IBAction func refreshBtnPressed(sender: AnyObject)
+    {
+        getEvent()
+    }
     func alertMsg(title: String, msg: String)
     {
             let alert = UIAlertController(title: title, message: msg, preferredStyle: .Alert)
