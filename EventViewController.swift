@@ -13,11 +13,12 @@ class EventViewController: UIViewController, CLLocationManagerDelegate , UIColle
 {
     @IBOutlet weak var eventCollectionView: UICollectionView!
     @IBOutlet weak var searchBar: UITextField!
-    
+    let refreshControl = UIRefreshControl()
     let locationManager = CLLocationManager()
     var eventDict = [AnyObject]()
     var numberofEvents = 10
     var selectedIndex : Int = 0
+    var error = false
     
     override func viewDidLoad()
     {
@@ -32,8 +33,14 @@ class EventViewController: UIViewController, CLLocationManagerDelegate , UIColle
             locationManager.desiredAccuracy = kCLLocationAccuracyBest
             locationManager.startMonitoringSignificantLocationChanges()
         }
+        eventCollectionView.allowsMultipleSelection = true
+        refreshControl.tintColor = UIColor.redColor()
+        refreshControl.addTarget(self, action: #selector(EventViewController.getEvent), forControlEvents: .ValueChanged)
+        eventCollectionView.addSubview(refreshControl)
+        eventCollectionView.alwaysBounceVertical = true
         getEvent()
     }
+    
     override func viewDidAppear(animated: Bool)
     {
         eventCollectionView.reloadData()
@@ -46,15 +53,21 @@ class EventViewController: UIViewController, CLLocationManagerDelegate , UIColle
             if data == nil && err == nil
             {
                 self.alertMsg("Error", msg: "Data Connection Error")
+                self.eventCollectionView.reloadData()
+                self.error = true
             }
             else if err != nil
             {
                 self.alertMsg("Error", msg: (err?.description)!)
+                self.eventCollectionView.reloadData()
+                self.error = true
             }
             else
             {
                 self.eventDict = data! as [AnyObject]
+                self.refreshControl.endRefreshing()
                 self.eventCollectionView.reloadData()
+                self.error = false
             }
         })
     }
@@ -114,9 +127,18 @@ class EventViewController: UIViewController, CLLocationManagerDelegate , UIColle
     func collectionView(collectionView: UICollectionView, cellForItemAtIndexPath indexPath: NSIndexPath) -> UICollectionViewCell
     {
         let cell = eventCollectionView.dequeueReusableCellWithReuseIdentifier("Cell", forIndexPath: indexPath) as! EventCollectionViewCell
-        cell.activityInd.hidden = false
-        cell.activityInd.startAnimating()
-        cell.eventImage.image = UIImage(named: "placeholder")
+        if error == true
+        {
+            cell.activityInd.stopAnimating()
+            cell.activityInd.hidden = true
+        }
+        else
+        {
+            cell.activityInd.hidden = false
+            cell.activityInd.startAnimating()
+        }
+        
+        cell.eventImage!.image = UIImage(named: "placeholder")
         self.configureCell(cell, atIndexPath: indexPath)
         return cell
     }
@@ -142,7 +164,7 @@ class EventViewController: UIViewController, CLLocationManagerDelegate , UIColle
                     {
                         if data != nil
                         {
-                            cell.eventImage.image = UIImage(data: data!)!
+                            cell.eventImage!.image = UIImage(data: data!)!
                         }
                     }
                 }
@@ -203,10 +225,8 @@ class EventViewController: UIViewController, CLLocationManagerDelegate , UIColle
             }
         }
     }
-    @IBAction func refreshBtnPressed(sender: AnyObject)
-    {
-        getEvent()
-    }
+    
+   
     func alertMsg(title: String, msg: String)
     {
             let alert = UIAlertController(title: title, message: msg, preferredStyle: .Alert)

@@ -7,8 +7,9 @@
 //
 
 import UIKit
+import CoreData
 
-class DetailViewController: UIViewController
+class DetailViewController: UIViewController, UIApplicationDelegate
 {
     @IBOutlet weak var titleLbl: UILabel!
     @IBOutlet weak var dateLbl: UILabel!
@@ -75,6 +76,44 @@ class DetailViewController: UIViewController
     @IBAction func doneBtnPresed(sender: AnyObject)
     {
         dismissViewControllerAnimated(true, completion: nil)
+    }
+    @IBAction func addToFavoBtn(sender: AnyObject)
+    {
+        let appDelegate = UIApplication.sharedApplication().delegate as! AppDelegate
+        let context = appDelegate.managedObjectContext
+        let entity = NSEntityDescription.entityForName("Event", inManagedObjectContext: context)
+        let entityObject = NSManagedObject(entity: entity!, insertIntoManagedObjectContext: context)
+        entityObject.setValue(titleLbl.text, forKey: "title")
+        entityObject.setValue(EventDetails.events[eventIndex].ticketURL, forKey: "ticketURL")
+
+       
+            if let data = UIImagePNGRepresentation(img.image!)
+            {
+                let paths = NSFileManager.defaultManager().URLsForDirectory(.DocumentDirectory, inDomains: .UserDomainMask)[0]
+                let filename = paths.URLByAppendingPathComponent("file\(eventIndex).png")
+                let result = data.writeToFile(filename.path!, atomically: true)
+                if result
+                {
+                    entityObject.setValue("file\(eventIndex).png", forKey: "image")
+                }
+            }
+        
+        entityObject.setValue(venuePlaceLbl.text, forKey: "venuePlace")
+        do{
+            
+            try context.save()
+             alertMsg("Saved", msg: "Added to Favourite")
+        }
+        catch
+        {
+            alertMsg("Saved Error", msg: "Not Added to Favourite")
+        }
+    }
+    func alertMsg(title: String, msg: String)
+    {
+        let alert = UIAlertController(title: title, message: msg, preferredStyle: .Alert)
+        alert.addAction(UIAlertAction(title: "OK", style: .Default, handler: nil))
+        self.presentViewController(alert, animated: true, completion: nil)
     }
 
 }

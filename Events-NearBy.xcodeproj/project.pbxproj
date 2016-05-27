@@ -22,6 +22,8 @@
 		6B93980F1CEA67140008A8B0 /* Events_NearByUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6B93980E1CEA67140008A8B0 /* Events_NearByUITests.swift */; };
 		6B9398201CEA6B570008A8B0 /* MaterialView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6B93981F1CEA6B570008A8B0 /* MaterialView.swift */; };
 		6B9398241CEAB0A40008A8B0 /* MaterialButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6B9398231CEAB0A40008A8B0 /* MaterialButton.swift */; };
+		6BA9DF691CF793BC00686545 /* FavouriteViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6BA9DF681CF793BC00686545 /* FavouriteViewController.swift */; };
+		6BA9DF6B1CF8B3B500686545 /* FavouriteTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6BA9DF6A1CF8B3B500686545 /* FavouriteTableViewCell.swift */; };
 		6BC548731CF150B7002BA068 /* MapViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6BC548721CF150B7002BA068 /* MapViewController.swift */; };
 		6BC548751CF22738002BA068 /* MapKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6BC548741CF22738002BA068 /* MapKit.framework */; };
 		6BC548781CF35FEB002BA068 /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6BC548771CF35FEB002BA068 /* Constants.swift */; };
@@ -67,6 +69,8 @@
 		6B9398101CEA67140008A8B0 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		6B93981F1CEA6B570008A8B0 /* MaterialView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MaterialView.swift; sourceTree = "<group>"; };
 		6B9398231CEAB0A40008A8B0 /* MaterialButton.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MaterialButton.swift; sourceTree = "<group>"; };
+		6BA9DF681CF793BC00686545 /* FavouriteViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = FavouriteViewController.swift; path = ../FavouriteViewController.swift; sourceTree = "<group>"; };
+		6BA9DF6A1CF8B3B500686545 /* FavouriteTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = FavouriteTableViewCell.swift; path = ../FavouriteTableViewCell.swift; sourceTree = "<group>"; };
 		6BC548721CF150B7002BA068 /* MapViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MapViewController.swift; sourceTree = "<group>"; };
 		6BC548741CF22738002BA068 /* MapKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MapKit.framework; path = System/Library/Frameworks/MapKit.framework; sourceTree = SDKROOT; };
 		6BC548771CF35FEB002BA068 /* Constants.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Constants.swift; sourceTree = "<group>"; };
@@ -170,6 +174,7 @@
 				6B93981F1CEA6B570008A8B0 /* MaterialView.swift */,
 				6B1502F91CF4A57B00899C60 /* CustomNavigation.swift */,
 				6B1503801CF4C67A00899C60 /* EventCollectionViewCell.swift */,
+				6BA9DF6A1CF8B3B500686545 /* FavouriteTableViewCell.swift */,
 				6B9398231CEAB0A40008A8B0 /* MaterialButton.swift */,
 			);
 			name = View;
@@ -182,6 +187,7 @@
 				6B9397ED1CEA67140008A8B0 /* EventsRefineController.swift */,
 				6B1502F11CF3978200899C60 /* DetailViewController.swift */,
 				6BC548721CF150B7002BA068 /* MapViewController.swift */,
+				6BA9DF681CF793BC00686545 /* FavouriteViewController.swift */,
 			);
 			name = Controller;
 			sourceTree = "<group>";
@@ -324,6 +330,7 @@
 				6B1503811CF4C67A00899C60 /* EventCollectionViewCell.swift in Sources */,
 				6B9397EE1CEA67140008A8B0 /* EventsRefineController.swift in Sources */,
 				6B15037D1CF4C2AF00899C60 /* EventViewController.swift in Sources */,
+				6BA9DF691CF793BC00686545 /* FavouriteViewController.swift in Sources */,
 				6B9397EC1CEA67140008A8B0 /* AppDelegate.swift in Sources */,
 				6B9398201CEA6B570008A8B0 /* MaterialView.swift in Sources */,
 				6B9398241CEAB0A40008A8B0 /* MaterialButton.swift in Sources */,
@@ -332,6 +339,7 @@
 				6B1502FA1CF4A57B00899C60 /* CustomNavigation.swift in Sources */,
 				6B1502F21CF3978200899C60 /* DetailViewController.swift in Sources */,
 				6BC548781CF35FEB002BA068 /* Constants.swift in Sources */,
+				6BA9DF6B1CF8B3B500686545 /* FavouriteTableViewCell.swift in Sources */,
 				6B1503831CF53A7D00899C60 /* EventDetails.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

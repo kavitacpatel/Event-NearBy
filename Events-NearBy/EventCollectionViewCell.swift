@@ -10,11 +10,11 @@ import UIKit
 
 class EventCollectionViewCell: UICollectionViewCell
 {
-    @IBOutlet weak var eventImage: UIImageView!
+    @IBOutlet weak var eventImage: UIImageView?
     @IBOutlet weak var eventTitle: UILabel!
     @IBOutlet weak var eventTime: UILabel!
     @IBOutlet weak var eventVenue: UILabel!
     @IBOutlet weak var eventTicket: UIButton!
     @IBOutlet weak var activityInd: UIActivityIndicatorView!
-   
+    @IBOutlet weak var favoriteBtn: UIButton!
 }
