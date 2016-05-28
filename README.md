@@ -18,6 +18,6 @@ User has more option to filter his events by choosing category and by selecting 
 
 <img width="376" alt="screen shot 2016-05-27 at 4 40 02 pm" src="https://cloud.githubusercontent.com/assets/17104174/15620716/f8f73af4-2429-11e6-9fc1-f368139d6156.png">
 
-This is detail view of event. User can select any event from collection view and it will redirect to detail view. User can buy tickets of event from here.
+This is detail view of event. User can select any event from collection view and it will redirect to detail view. User can buy tickets of event from here. In description if there is an address and user click on that, map will be open showing that address. if there is an external link in description user can redirected by clicking on that.
 
 <img width="377" alt="screen shot 2016-05-27 at 4 40 28 pm" src="https://cloud.githubusercontent.com/assets/17104174/15620719/fafa3f86-2429-11e6-8366-5f94c1bcbef5.png">
