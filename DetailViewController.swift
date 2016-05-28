@@ -18,7 +18,7 @@ class DetailViewController: UIViewController, UIApplicationDelegate
     @IBOutlet weak var venueAddLbl: UILabel!
     @IBOutlet weak var ticketBtn: UIButton!
     @IBOutlet weak var img: UIImageView!
-    @IBOutlet weak var descLbl: UILabel!
+    @IBOutlet weak var descText: UITextView!
     @IBOutlet weak var venueCityLbl: UILabel!
     @IBOutlet weak var venueStateLbl: UILabel!
     var eventIndex: Int = 0
@@ -38,7 +38,16 @@ class DetailViewController: UIViewController, UIApplicationDelegate
                 venueAddLbl.text = EventDetails.events[eventIndex].venue_address
                 venueCityLbl.text = EventDetails.events[eventIndex].city_name
                 venueStateLbl.text = EventDetails.events[eventIndex].region_name
-                descLbl.text = EventDetails.events[eventIndex].desc
+            // Description has html format
+            let htmlString = EventDetails.events[eventIndex].desc
+            if htmlString != nil
+            {
+                let htmlStringData = htmlString!.dataUsingEncoding(NSUTF8StringEncoding)!
+                let options: [String: AnyObject] = [NSDocumentTypeDocumentAttribute: NSHTMLTextDocumentType, NSCharacterEncodingDocumentAttribute: NSUTF8StringEncoding]
+                let attributedHTMLString = try! NSAttributedString(data: htmlStringData, options: options, documentAttributes: nil)
+                descText.text = attributedHTMLString.string
+            }
+            // Get image from URL
                 let imgURL = EventDetails.events[eventIndex].imageURL
                 if imgURL != nil
                 {

@@ -43,8 +43,7 @@ class EventViewController: UIViewController, CLLocationManagerDelegate , UIColle
     {
         eventCollectionView.addSubview(refreshControl)
         eventCollectionView.alwaysBounceVertical = true
-        clearCollection()
-        
+        eventCollectionView.reloadData()
     }
     func clearCollection()
     {

@@ -474,16 +474,6 @@
                                                 <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                                 <nil key="highlightedColor"/>
                                             </label>
-                                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" ambiguous="YES" misplaced="YES" text="" textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="11" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="KXo-cy-jQd">
-                                                <rect key="frame" x="8" y="268" width="544" height="233"/>
-                                                <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
-                                                <constraints>
-                                                    <constraint firstAttribute="width" constant="544" id="MIs-KI-rJq"/>
-                                                </constraints>
-                                                <fontDescription key="fontDescription" name="HelveticaNeue" family="Helvetica Neue" pointSize="14"/>
-                                                <color key="textColor" white="0.66666666666666663" alpha="1" colorSpace="calibratedWhite"/>
-                                                <nil key="highlightedColor"/>
-                                            </label>
                                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" ambiguous="YES" misplaced="YES" text="" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="M1y-Ua-xfC">
                                                 <rect key="frame" x="126" y="158" width="426" height="21"/>
                                                 <constraints>
@@ -527,24 +517,33 @@
                                                     <action selector="ticketBtnPressed:" destination="1AJ-Hk-dZp" eventType="touchUpInside" id="5zD-4y-sLc"/>
                                                 </connections>
                                             </button>
+                                            <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" ambiguous="YES" misplaced="YES" editable="NO" textAlignment="natural" translatesAutoresizingMaskIntoConstraints="NO" id="uHh-zM-mOv">
+                                                <rect key="frame" x="8" y="252" width="544" height="249"/>
+                                                <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
+                                                <color key="tintColor" red="1" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
+                                                <color key="textColor" red="1" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
+                                                <fontDescription key="fontDescription" name="HelveticaNeue" family="Helvetica Neue" pointSize="12"/>
+                                                <textInputTraits key="textInputTraits" autocapitalizationType="sentences"/>
+                                                <dataDetectorType key="dataDetectorTypes" link="YES" address="YES" calendarEvent="YES"/>
+                                            </textView>
                                         </subviews>
                                         <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                                         <constraints>
-                                            <constraint firstAttribute="trailing" secondItem="KXo-cy-jQd" secondAttribute="trailing" constant="8" id="1UN-tX-nPT"/>
                                             <constraint firstAttribute="trailing" secondItem="lSB-dL-gPR" secondAttribute="trailing" constant="8" id="6WS-jM-P4Z"/>
+                                            <constraint firstItem="uHh-zM-mOv" firstAttribute="leading" secondItem="6pS-aC-0Yh" secondAttribute="leading" constant="8" id="74O-RS-wlU"/>
                                             <constraint firstAttribute="trailing" secondItem="1R9-5O-YPI" secondAttribute="trailing" constant="8" id="ACG-uH-nGl"/>
-                                            <constraint firstItem="KXo-cy-jQd" firstAttribute="leading" secondItem="6pS-aC-0Yh" secondAttribute="leading" constant="8" id="Che-pO-cG5"/>
                                             <constraint firstItem="URi-Ca-Axt" firstAttribute="top" secondItem="M1y-Ua-xfC" secondAttribute="bottom" constant="1" id="Dzr-mG-MwA"/>
                                             <constraint firstItem="9WF-EF-NrB" firstAttribute="centerX" secondItem="6pS-aC-0Yh" secondAttribute="centerX" id="Ftq-bf-Upi"/>
                                             <constraint firstItem="9WF-EF-NrB" firstAttribute="top" secondItem="URi-Ca-Axt" secondAttribute="bottom" constant="13" id="HjM-hZ-luX"/>
                                             <constraint firstItem="wv7-Y3-eDG" firstAttribute="top" secondItem="1R9-5O-YPI" secondAttribute="bottom" constant="8" id="HqY-al-rg9"/>
                                             <constraint firstAttribute="trailing" secondItem="wv7-Y3-eDG" secondAttribute="trailing" constant="8" id="Ky0-UM-1wE"/>
-                                            <constraint firstItem="KXo-cy-jQd" firstAttribute="top" secondItem="9WF-EF-NrB" secondAttribute="bottom" constant="24" id="MAF-jB-Smv"/>
+                                            <constraint firstAttribute="trailing" secondItem="uHh-zM-mOv" secondAttribute="trailing" constant="8" id="Uyk-8P-ZWe"/>
                                             <constraint firstItem="M1y-Ua-xfC" firstAttribute="leading" secondItem="Zf4-fc-J6J" secondAttribute="trailing" constant="8" id="WHH-6I-jie"/>
-                                            <constraint firstAttribute="bottom" secondItem="KXo-cy-jQd" secondAttribute="bottom" constant="8" id="Z2K-TU-MRo"/>
                                             <constraint firstItem="Zf4-fc-J6J" firstAttribute="leading" secondItem="6pS-aC-0Yh" secondAttribute="leading" constant="8" id="ZaQ-oj-PVs"/>
                                             <constraint firstItem="1R9-5O-YPI" firstAttribute="leading" secondItem="6pS-aC-0Yh" secondAttribute="leading" constant="8" id="hQ5-Ab-ipf"/>
                                             <constraint firstItem="1R9-5O-YPI" firstAttribute="top" secondItem="6pS-aC-0Yh" secondAttribute="top" constant="8" id="ha4-vF-xaJ"/>
+                                            <constraint firstItem="uHh-zM-mOv" firstAttribute="top" secondItem="9WF-EF-NrB" secondAttribute="bottom" constant="8" id="hkb-aN-6lZ"/>
+                                            <constraint firstAttribute="bottom" secondItem="uHh-zM-mOv" secondAttribute="bottom" constant="8" id="l17-uc-xEG"/>
                                             <constraint firstItem="Zf4-fc-J6J" firstAttribute="top" secondItem="1R9-5O-YPI" secondAttribute="bottom" constant="8" id="nW0-AF-NCE"/>
                                             <constraint firstItem="M1y-Ua-xfC" firstAttribute="top" secondItem="lSB-dL-gPR" secondAttribute="bottom" constant="1" id="oKU-nV-EpW"/>
                                             <constraint firstAttribute="trailing" secondItem="URi-Ca-Axt" secondAttribute="trailing" constant="8" id="udL-5p-x61"/>
@@ -605,7 +604,7 @@
                     </view>
                     <connections>
                         <outlet property="dateLbl" destination="wv7-Y3-eDG" id="uw7-6W-hoP"/>
-                        <outlet property="descLbl" destination="KXo-cy-jQd" id="bLp-VP-xtv"/>
+                        <outlet property="descText" destination="uHh-zM-mOv" id="Pw1-5j-jD3"/>
                         <outlet property="favoBtn" destination="X87-DG-Gvg" id="Fsf-Jb-AqZ"/>
                         <outlet property="img" destination="Zf4-fc-J6J" id="KxK-Di-KPP"/>
                         <outlet property="ticketBtn" destination="9WF-EF-NrB" id="PG8-DN-HDi"/>
