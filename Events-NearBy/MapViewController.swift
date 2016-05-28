@@ -139,11 +139,6 @@ class MapViewController: UIViewController,UITableViewDataSource, UITableViewDele
     {
         radiusTableView.hidden = false
     }
-    func alertMsg(title: String, msg: String)
-    {
-        let alert = UIAlertController(title: title, message: msg, preferredStyle: .Alert)
-        alert.addAction(UIAlertAction(title: "OK", style: .Default, handler: nil))
-        self.presentViewController(alert, animated: true, completion: nil)
-    }
+   
 
 }

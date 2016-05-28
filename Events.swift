@@ -16,56 +16,73 @@ class Events
     var date: String = "All"
     var city: String = "Orlando,fl"
     var category: String = "All"
-    
-    func getEventsList(completionHandler: (data: NSArray?, err: NSError?) -> Void )
+    func getEventsList(completionHandler: (data: NSArray?, err: String?) -> Void )
     {
         let dateNewString = date.stringByReplacingOccurrencesOfString(" ", withString: "%20", options: NSStringCompareOptions.LiteralSearch, range: nil)
         let categoryNewString = category.stringByReplacingOccurrencesOfString(" ", withString: "%20", options: NSStringCompareOptions.LiteralSearch, range: nil)
-        let urlString:String = "\(BASE_URL)\(API_KEY)&location=\(city)&page_number=\(page)&date=\(dateNewString.lowercaseString)&within=\(radius)&c=\(categoryNewString.lowercaseString)&mature=safe&include=tickets"
+        let cityNewString = city.stringByReplacingOccurrencesOfString(" ", withString: "%20", options: NSStringCompareOptions.LiteralSearch, range: nil)
+        let urlString:String = "\(BASE_URL)\(API_KEY)&location=\(cityNewString)&page_number=\(page)&date=\(dateNewString.lowercaseString)&within=\(radius)&c=\(categoryNewString.lowercaseString)&mature=safe&include=tickets"
         print(urlString)
-        let request = NSMutableURLRequest(URL: NSURL(string: urlString)!)
-        request.addValue("\(API_KEY)", forHTTPHeaderField: "X-Parse-REST-API-Key")
-        let session = NSURLSession.sharedSession()
-        // Clear Event History
-        EventDetails.events.removeAll()
-        let task = session.dataTaskWithRequest(request) { data, response, error in
-            if data == nil
-            {
-                completionHandler(data: nil, err: nil)
+        let nsURL: NSURL? = NSURL(string: urlString)
+        
+        if nsURL != nil
+        {
+            let request = NSMutableURLRequest(URL: nsURL!)
+            request.addValue("\(API_KEY)", forHTTPHeaderField: "X-Parse-REST-API-Key")
+            let session = NSURLSession.sharedSession()
+            // Clear Event History
+            EventDetails.events.removeAll()
+            let task = session.dataTaskWithRequest(request) { data, response, error in
+                if data == nil
+                {
+                    completionHandler(data: nil, err: nil)
+                }
+                else if error != nil
+                {
+                    completionHandler(data: nil, err: error?.description)
+                }
+                else
+                {
+                    self.parsedResult(data!, completionHandler: { (result, err) in
+                        completionHandler(data: result, err: err)
+                    })
+                    
+                }
             }
-            else if error != nil
-            {
-                completionHandler(data: nil, err: error)
-            }
-            else
-            {
-                self.parsedResult(data!, completionHandler: { (result, err) in
-                    completionHandler(data: result, err: nil)
-                })
-                
-            }
+            task.resume()
+
         }
-        task.resume()
+        else
+        {
+            completionHandler(data: nil, err: "Try Valid City name + State code")
+        }
     }
-    func parsedResult(data: NSData, completionHandler: (result: NSArray?, err: NSError?) -> Void)
+    func parsedResult(data: NSData, completionHandler: (result: NSArray?, err: String?) -> Void)
     {
         let parsedResult: NSDictionary?
         do {
             parsedResult = try NSJSONSerialization.JSONObjectWithData(data, options: NSJSONReadingOptions.AllowFragments) as? NSDictionary
-            let dict = parsedResult!["events"] as! NSDictionary
-            let eventDict = dict["event"] as? NSArray
-            if eventDict?.count != 0
+            if let dict = parsedResult!["events"] as? NSDictionary
             {
-                EventDetails.eventsFromResults(eventDict!)
-                completionHandler(result: eventDict!, err: nil)
+                let eventDict = dict["event"] as? NSArray
+                if eventDict?.count != 0
+                {
+                    EventDetails.eventsFromResults(eventDict!)
+                    completionHandler(result: eventDict!, err: nil)
+                }
+                else
+                {
+                    completionHandler(result: eventDict!, err: nil)
+                }
+ 
             }
             else
             {
-                completionHandler(result: eventDict!, err: nil)
+                completionHandler(result: nil, err: "Enter Valid City Name")
             }
-        } catch let err as NSError
+         } catch let err as NSError
         {
-            completionHandler(result: nil, err: err)
+            completionHandler(result: nil, err: err.description)
         }
     }
     

@@ -49,6 +49,23 @@ class FavouriteViewController: UITableViewController
     {
         return events.count
     }
+    override func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath)
+    {
+        let urlStr = events[indexPath.row].valueForKey("ticketURL")
+        if urlStr != nil
+        {
+            let url = NSURL(string: (urlStr)! as! String)
+            if UIApplication.sharedApplication().canOpenURL(url!)
+            {
+                UIApplication.sharedApplication().openURL(url!)
+            }
+            else
+            {
+                print("Ticket Link is Not InValid" )
+            }
+  
+        }
+    }
     override func tableView(tableView: UITableView, commitEditingStyle editingStyle: UITableViewCellEditingStyle, forRowAtIndexPath indexPath: NSIndexPath)
     {
         if editingStyle == UITableViewCellEditingStyle.Delete
@@ -80,15 +97,20 @@ class FavouriteViewController: UITableViewController
                 let img = UIImage(contentsOfFile: fileURL.path!)
                     cell.img.image = img
             }
-            return cell
-
+            if events[indexPath.row].valueForKey("ticketURL") as? String != nil
+            {
+                cell.ticketOption.hidden = false
+            }
+            else
+            {
+                cell.ticketOption.hidden = true
+            }
         }
         else
         {
             cell.title.text = ""
             cell.venue.text = ""
             cell.img.image = UIImage(named: "banner")
-  
         }
         return cell
     }

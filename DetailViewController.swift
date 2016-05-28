@@ -14,6 +14,7 @@ class DetailViewController: UIViewController, UIApplicationDelegate
     @IBOutlet weak var titleLbl: UILabel!
     @IBOutlet weak var dateLbl: UILabel!
     @IBOutlet weak var venuePlaceLbl: UILabel!
+    @IBOutlet weak var favoBtn: UIBarButtonItem!
     @IBOutlet weak var venueAddLbl: UILabel!
     @IBOutlet weak var ticketBtn: UIButton!
     @IBOutlet weak var img: UIImageView!
@@ -21,7 +22,7 @@ class DetailViewController: UIViewController, UIApplicationDelegate
     @IBOutlet weak var venueCityLbl: UILabel!
     @IBOutlet weak var venueStateLbl: UILabel!
     var eventIndex: Int = 0
-    
+    let alertObj = AlertViewController()
     override func viewDidLoad()
     {
         super.viewDidLoad()
@@ -29,49 +30,56 @@ class DetailViewController: UIViewController, UIApplicationDelegate
     override func viewDidAppear(animated: Bool)
     {
         super.viewDidAppear(animated)
-        titleLbl.text = EventDetails.events[eventIndex].title
-        dateLbl.text = EventDetails.events[eventIndex].start_time
-        venuePlaceLbl.text = EventDetails.events[eventIndex].venue_name
-        venueAddLbl.text = EventDetails.events[eventIndex].venue_address
-        venueCityLbl.text = EventDetails.events[eventIndex].city_name
-        venueStateLbl.text = EventDetails.events[eventIndex].region_name
-        descLbl.text = EventDetails.events[eventIndex].desc
-        let imgURL = EventDetails.events[eventIndex].imageURL
-        if imgURL != nil
+        if EventDetails.events.count > 0
         {
-            let url = NSURL(string: imgURL!)
-            let data = NSData(contentsOfURL: url!)
-            dispatch_async(dispatch_get_main_queue())
-            {
-                if data != nil
+                titleLbl.text = EventDetails.events[eventIndex].title
+                dateLbl.text = EventDetails.events[eventIndex].start_time
+                venuePlaceLbl.text = EventDetails.events[eventIndex].venue_name
+                venueAddLbl.text = EventDetails.events[eventIndex].venue_address
+                venueCityLbl.text = EventDetails.events[eventIndex].city_name
+                venueStateLbl.text = EventDetails.events[eventIndex].region_name
+                descLbl.text = EventDetails.events[eventIndex].desc
+                let imgURL = EventDetails.events[eventIndex].imageURL
+                if imgURL != nil
                 {
-                    self.img.image = UIImage(data: data!)!
+                    let url = NSURL(string: imgURL!)
+                    let data = NSData(contentsOfURL: url!)
+                    dispatch_async(dispatch_get_main_queue())
+                    {
+                        if data != nil
+                        {
+                            self.img.image = UIImage(data: data!)!
+                        }
+                    }
                 }
-            }
-        }
-        if EventDetails.events[eventIndex].ticketURL != nil
-        {
-            ticketBtn.enabled = true
-            ticketBtn.hidden = false
-        }
-        else
-        {
-            ticketBtn.hidden = true
+                if EventDetails.events[eventIndex].ticketURL != nil
+                {
+                    ticketBtn.enabled = true
+                    ticketBtn.hidden = false
+                }
+                else
+                {
+                    ticketBtn.hidden = true
+                }
         }
     }
     @IBAction func ticketBtnPressed(sender: AnyObject)
     {
         let urlStr = EventDetails.events[eventIndex].ticketURL
-        let url = NSURL(string: (urlStr)!)
-        if UIApplication.sharedApplication().canOpenURL(url!)
+        if urlStr != nil
         {
-            UIApplication.sharedApplication().openURL(url!)
+            let url = NSURL(string: (urlStr)!)
+            if UIApplication.sharedApplication().canOpenURL(url!)
+            {
+                UIApplication.sharedApplication().openURL(url!)
+            }
+            else
+            {
+                print("Ticket Link is Not InValid" )
+            }
+ 
         }
-        else
-        {
-            print("Ticket Link is Not InValid" )
-        }
-
+        
     }
     @IBAction func doneBtnPresed(sender: AnyObject)
     {
@@ -79,14 +87,17 @@ class DetailViewController: UIViewController, UIApplicationDelegate
     }
     @IBAction func addToFavoBtn(sender: AnyObject)
     {
-        let appDelegate = UIApplication.sharedApplication().delegate as! AppDelegate
-        let context = appDelegate.managedObjectContext
-        let entity = NSEntityDescription.entityForName("Event", inManagedObjectContext: context)
-        let entityObject = NSManagedObject(entity: entity!, insertIntoManagedObjectContext: context)
-        entityObject.setValue(titleLbl.text, forKey: "title")
-        entityObject.setValue(EventDetails.events[eventIndex].ticketURL, forKey: "ticketURL")
-
-       
+        if EventDetails.events.count > 0
+        {
+            favoBtn.enabled = true
+            let appDelegate = UIApplication.sharedApplication().delegate as! AppDelegate
+            let context = appDelegate.managedObjectContext
+            let entity = NSEntityDescription.entityForName("Event", inManagedObjectContext: context)
+            let entityObject = NSManagedObject(entity: entity!, insertIntoManagedObjectContext: context)
+            entityObject.setValue(titleLbl.text, forKey: "title")
+            entityObject.setValue(EventDetails.events[eventIndex].ticketURL, forKey: "ticketURL")
+            
+            
             if let data = UIImagePNGRepresentation(img.image!)
             {
                 let paths = NSFileManager.defaultManager().URLsForDirectory(.DocumentDirectory, inDomains: .UserDomainMask)[0]
@@ -97,23 +108,23 @@ class DetailViewController: UIViewController, UIApplicationDelegate
                     entityObject.setValue("file\(eventIndex).png", forKey: "image")
                 }
             }
-        
-        entityObject.setValue(venuePlaceLbl.text, forKey: "venuePlace")
-        do{
             
-            try context.save()
-             alertMsg("Saved", msg: "Added to Favourite")
-        }
-        catch
-        {
-            alertMsg("Saved Error", msg: "Not Added to Favourite")
-        }
-    }
-    func alertMsg(title: String, msg: String)
-    {
-        let alert = UIAlertController(title: title, message: msg, preferredStyle: .Alert)
-        alert.addAction(UIAlertAction(title: "OK", style: .Default, handler: nil))
-        self.presentViewController(alert, animated: true, completion: nil)
-    }
+            entityObject.setValue(venuePlaceLbl.text, forKey: "venuePlace")
+            do{
+                
+                try context.save()
+                alertObj.alertMsg("saved", msg: "Added to Favourite",VC: self)
+            }
+            catch
+            {
+                alertObj.alertMsg("Saved Error", msg: "Not Added to Favourite",VC: self)
+            }
 
+        }
+        else
+        {
+            favoBtn.enabled = false
+        }
+    }
+   
 }

@@ -19,7 +19,7 @@ class EventViewController: UIViewController, CLLocationManagerDelegate , UIColle
     var numberofEvents = 10
     var selectedIndex : Int = 0
     var error = false
-    
+    let alertObj = AlertViewController()
     override func viewDidLoad()
     {
         super.viewDidLoad()
@@ -36,38 +36,52 @@ class EventViewController: UIViewController, CLLocationManagerDelegate , UIColle
         eventCollectionView.allowsMultipleSelection = true
         refreshControl.tintColor = UIColor.redColor()
         refreshControl.addTarget(self, action: #selector(EventViewController.getEvent), forControlEvents: .ValueChanged)
-        eventCollectionView.addSubview(refreshControl)
-        eventCollectionView.alwaysBounceVertical = true
         getEvent()
     }
     
     override func viewDidAppear(animated: Bool)
     {
+        eventCollectionView.addSubview(refreshControl)
+        eventCollectionView.alwaysBounceVertical = true
+        clearCollection()
+        
+    }
+    func clearCollection()
+    {
+        eventDict.removeAll()
+        EventDetails.events.removeAll()
         eventCollectionView.reloadData()
     }
     func getEvent()
     {
-        eventDict.removeAll()
-        self.eventCollectionView.reloadData()
+        error = false
+        numberofEvents = 10
+        clearCollection()
         Events.instance.getEventsList({ (data, err) in
             if data == nil && err == nil
             {
-                self.alertMsg("Error", msg: "Data Connection Error")
-                self.eventCollectionView.reloadData()
+                self.alertObj.alertMsg("Error", msg: "Data Connection Error",VC: self)
+                EventDetails.events.removeAll()
+                self.refreshControl.endRefreshing()
                 self.error = true
             }
             else if err != nil
             {
-                self.alertMsg("Error", msg: (err?.description)!)
-                self.eventCollectionView.reloadData()
+                self.alertObj.alertMsg("Error", msg: err!,VC: self)
+                EventDetails.events.removeAll()
+                self.refreshControl.endRefreshing()
                 self.error = true
             }
             else
             {
                 self.eventDict = data! as [AnyObject]
+                self.numberofEvents = self.eventDict.count
                 self.refreshControl.endRefreshing()
-                self.eventCollectionView.reloadData()
                 self.error = false
+            }
+            dispatch_async(dispatch_get_main_queue())
+            {
+                self.eventCollectionView.reloadData()
             }
         })
     }
@@ -127,15 +141,14 @@ class EventViewController: UIViewController, CLLocationManagerDelegate , UIColle
     func collectionView(collectionView: UICollectionView, cellForItemAtIndexPath indexPath: NSIndexPath) -> UICollectionViewCell
     {
         let cell = eventCollectionView.dequeueReusableCellWithReuseIdentifier("Cell", forIndexPath: indexPath) as! EventCollectionViewCell
+        cell.activityInd.hidden = false
+        cell.activityInd.startAnimating()
         if error == true
         {
             cell.activityInd.stopAnimating()
+            eventDict.removeAll()
             cell.activityInd.hidden = true
-        }
-        else
-        {
-            cell.activityInd.hidden = false
-            cell.activityInd.startAnimating()
+            return cell
         }
         
         cell.eventImage!.image = UIImage(named: "placeholder")
@@ -212,27 +225,24 @@ class EventViewController: UIViewController, CLLocationManagerDelegate , UIColle
     }
     @IBAction func ticketBtnPressed(sender: AnyObject)
     {
-        if EventDetails.events[sender.tag].ticketURL != nil
+        clearCollection()
+        if EventDetails.events.count > 0
         {
-            let url = NSURL(string: (EventDetails.events[sender.tag].ticketURL)!)
-            if UIApplication.sharedApplication().canOpenURL(url!)
+            if EventDetails.events[sender.tag].ticketURL != nil
             {
-                UIApplication.sharedApplication().openURL(url!)
+                let url = NSURL(string: (EventDetails.events[sender.tag].ticketURL)!)
+                if UIApplication.sharedApplication().canOpenURL(url!)
+                {
+                    UIApplication.sharedApplication().openURL(url!)
+                }
+                else
+                {
+                    alertObj.alertMsg("Link Error", msg: "Ticket Link is Not InValid",VC: self )
+                }
             }
-            else
-            {
-                alertMsg("Link Error", msg: "Ticket Link is Not InValid" )
-            }
+
         }
     }
     
-   
-    func alertMsg(title: String, msg: String)
-    {
-            let alert = UIAlertController(title: title, message: msg, preferredStyle: .Alert)
-            alert.addAction(UIAlertAction(title: "OK", style: .Default, handler: nil))
-            self.presentViewController(alert, animated: true, completion: nil)
-    }
-
 }
 

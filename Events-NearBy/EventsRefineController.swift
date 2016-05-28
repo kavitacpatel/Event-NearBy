@@ -32,7 +32,6 @@ class EventsRefineController: UIViewController, UITableViewDataSource, UITableVi
         {
             if categoryBtn[index].titleLabel?.text == Events.instance.category
             {
-                // categoryBtn[index].backgroundColor = UIColor.redColor()
                 categoryBtn[index].setTitleColor(UIColor.blackColor(), forState: .Normal)
             }
         }
@@ -69,7 +68,6 @@ class EventsRefineController: UIViewController, UITableViewDataSource, UITableVi
         {
             if index == sender.tag
             {
-               // categoryBtn[index].backgroundColor = UIColor.redColor()
                 categoryBtn[index].setTitleColor(UIColor.blackColor(), forState: .Normal)
             }
             else
@@ -81,12 +79,7 @@ class EventsRefineController: UIViewController, UITableViewDataSource, UITableVi
        Events.instance.category = sender.titleLabel!.text!
     }
     
-    func alertMsg(title: String, msg: String)
-    {
-        let alert = UIAlertController(title: title, message: msg, preferredStyle: .Alert)
-        alert.addAction(UIAlertAction(title: "OK", style: .Default, handler: nil))
-        self.presentViewController(alert, animated: true, completion: nil)
-    }
+    
    
 }
 
